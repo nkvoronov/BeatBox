@@ -1,9 +1,12 @@
 package com.nkvoronov.beatbox;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -13,7 +16,7 @@ import com.nkvoronov.beatbox.databinding.ListItemSoundBinding;
 
 import java.util.List;
 
-public class BeatBoxFragment extends Fragment {
+public class BeatBoxFragment extends Fragment implements SeekBar.OnSeekBarChangeListener{
     private BeatBox mBeatBox;
 
     public static BeatBoxFragment newInstance() {
@@ -32,7 +35,31 @@ public class BeatBoxFragment extends Fragment {
         FragmentBeatBoxBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_beat_box, container, false);
         binding.recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         binding.recyclerView.setAdapter(new SoundAdapter(mBeatBox.getSounds()));
+        binding.seekBar.setOnSeekBarChangeListener(this);
         return binding.getRoot();
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        Log.d("BeatBox","onProgressChanged");
+        if ( fromUser ) {
+            // 0-based counting for progress
+            float soundRate = (float)(1.0f +( (float)( progress - 5 )/10));
+            mBeatBox.setSoundRate(soundRate);
+            Log.d("BeatBox", "Got progress change of: " + progress + ", changed rate to: " +soundRate);
+        } else {
+            Log.d("BeatBox", "Got progress change of: " + progress + " but not from user");
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        //
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        //
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder {
