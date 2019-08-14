@@ -19,7 +19,7 @@ public class Sound {
         return mName;
     }
 
-    public Integer getmSoundId() {
+    public Integer getSoundId() {
         return mSoundId;
     }
 
